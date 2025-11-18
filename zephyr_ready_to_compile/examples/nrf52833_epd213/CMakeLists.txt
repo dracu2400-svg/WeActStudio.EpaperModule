@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.20.0)
 # Add driver to build
 set(DRIVER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../driver)
 
+# Add custom device tree bindings path
+list(APPEND DTS_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(epaper_213_nrf52833)
 

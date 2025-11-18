@@ -17,7 +17,7 @@
 
 #include "weact_epaper.h"
 
-LOG_MODULE_REGISTER(weact_epaper, CONFIG_DISPLAY_LOG_LEVEL);
+LOG_MODULE_REGISTER(weact_epaper, CONFIG_LOG_DEFAULT_LEVEL);
 
 /* Partial update LUT for EPD213 */
 static const uint8_t lut_partial[] = {
