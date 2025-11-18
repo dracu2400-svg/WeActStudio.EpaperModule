@@ -629,8 +629,7 @@ static int weact_epaper_init_device(const struct device *dev)
 		.width = DT_INST_PROP(inst, width),				\
 		.height = DT_INST_PROP(inst, height),				\
 		.panel_type = DT_INST_PROP(inst, panel_type),			\
-		.color_red = DT_INST_STRING_TOKEN(inst, color_mode) ==		\
-			     DT_STRING_TOKEN(bwr, color_mode),			\
+		.color_red = (DT_INST_ENUM_IDX(inst, color_mode) == 1),	\
 	};									\
 										\
 	DEVICE_DT_INST_DEFINE(inst,						\
