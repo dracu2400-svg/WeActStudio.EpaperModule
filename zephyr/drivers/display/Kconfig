@@ -1,0 +1,33 @@
+# Copyright (c) 2025 WeAct Studio
+# SPDX-License-Identifier: Apache-2.0
+
+config WEACT_EPAPER
+	bool "WeAct Studio E-Paper Display Driver"
+	default y
+	depends on DT_HAS_WEACT_EPAPER_ENABLED
+	depends on SPI
+	select GPIO
+	help
+	  Enable driver for WeAct Studio E-Paper display modules.
+
+	  Supports the following display sizes:
+	  - 1.54" (200x200) Black & White
+	  - 2.13" (122x250) Black & White
+	  - 2.9" (128x296) Black & White / Black & White & Red
+	  - 3.7" (240x416) Black & White
+	  - 4.2" (400x300) Black & White / Black & White & Red
+
+	  The driver uses SPI for communication with the display controller
+	  and requires GPIO pins for reset, data/command selection, and
+	  busy status indication.
+
+if WEACT_EPAPER
+
+config WEACT_EPAPER_INIT_PRIORITY
+	int "WeAct E-Paper initialization priority"
+	default 90
+	help
+	  Initialization priority for WeAct E-Paper display driver.
+	  Must be greater than SPI and GPIO initialization priorities.
+
+endif # WEACT_EPAPER

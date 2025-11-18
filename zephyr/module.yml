@@ -1,0 +1,7 @@
+# Copyright (c) 2025 WeAct Studio
+# SPDX-License-Identifier: Apache-2.0
+
+name: weact-epaper
+build:
+  cmake: .
+  kconfig: Kconfig

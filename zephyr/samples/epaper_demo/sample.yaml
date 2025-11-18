@@ -1,0 +1,24 @@
+# Copyright (c) 2025 WeAct Studio
+# SPDX-License-Identifier: Apache-2.0
+
+sample:
+  name: WeAct E-Paper Display Demo
+  description: Demonstration of WeAct E-Paper display driver on Nordic boards
+common:
+  tags: display epaper spi
+  platform_allow:
+    - nrf52840dk_nrf52840
+    - nrf52832dk_nrf52832
+    - nrf54l15dk_nrf54l15_cpuapp
+  integration_platforms:
+    - nrf52840dk_nrf52840
+  harness: console
+  harness_config:
+    type: multi_line
+    ordered: false
+    regex:
+      - "WeAct E-Paper Display Demo"
+      - "Display initialized successfully"
+tests:
+  sample.display.weact_epaper:
+    tags: display

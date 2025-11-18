@@ -1,0 +1,70 @@
+# Copyright (c) 2025 WeAct Studio
+# SPDX-License-Identifier: Apache-2.0
+
+description: WeAct Studio E-Paper Display Module
+
+compatible: "weact,epaper"
+
+include: [spi-device.base.yaml]
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      GPIO connected to the display's reset (RES) pin.
+      Active low signal.
+
+  dc-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      GPIO connected to the display's data/command (DC) pin.
+      High = data, Low = command.
+
+  busy-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      GPIO connected to the display's busy status pin.
+      Used to check when the display is ready.
+
+  width:
+    type: int
+    required: true
+    description: Display width in pixels
+
+  height:
+    type: int
+    required: true
+    description: Display height in pixels
+
+  panel-type:
+    type: int
+    required: true
+    description: |
+      E-paper panel type:
+      0 = EPD213_219 (2.13" 122x250)
+      1 = EPD154 (1.54" 200x200)
+      2 = EPD420 (4.2" 400x300)
+      3 = EPD370_UC8253 (3.7" 240x416)
+    enum:
+      - 0  # EPD213_219
+      - 1  # EPD154
+      - 2  # EPD420
+      - 3  # EPD370_UC8253
+
+  color-mode:
+    type: string
+    default: "bw"
+    description: |
+      Color mode support:
+      "bw" = Black & White only
+      "bwr" = Black, White & Red
+    enum:
+      - "bw"
+      - "bwr"
+
+  spi-max-frequency:
+    default: 1000000
+    description: Maximum SPI clock frequency (default 1MHz)
