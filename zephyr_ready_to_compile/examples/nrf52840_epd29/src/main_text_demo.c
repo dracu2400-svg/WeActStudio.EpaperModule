@@ -2,8 +2,12 @@
  * WeAct Studio E-Paper Text Display Demo
  * Based on working Arduino port with corrected BUSY pin logic
  *
- * Display: 2.9" (128x296 pixels)
+ * Display: 2.9" 3-Color (128x296 pixels, Black/White/Red)
  * Controller: UC8151D
+ *
+ * Supports dual RAM architecture:
+ * - Register 0x24: Black/White RAM
+ * - Register 0x26: Red RAM (inverted data to clear red pixels)
  */
 
 #include <zephyr/kernel.h>
@@ -20,7 +24,7 @@ LOG_MODULE_REGISTER(epaper_text, LOG_LEVEL_DBG);
 #define RST_PIN  11  // P1.11
 #define DC_PIN   10  // P1.10
 #define CS_PIN   12  // P1.12
-#define BUSY_PIN  8  // P1.08 - INVERTED: LOW=busy, HIGH=ready
+#define BUSY_PIN  8  // P1.08 - HIGH=busy, LOW=ready
 
 /* Display dimensions for 2.9" */
 #define EPD_WIDTH  128
@@ -353,6 +357,25 @@ bool update_display(void)
     /* Write RAM (black/white) */
     write_cmd(0x24);
     write_data_buf(framebuffer, sizeof(framebuffer));
+
+    /* Reset RAM position for red channel */
+    write_cmd(0x4E);
+    write_data(0x00);
+
+    write_cmd(0x4F);
+    write_data(0x00);
+    write_data(0x00);
+
+    /* Write RAM (red) - Clear all red pixels for text display */
+    write_cmd(0x26);
+    /* For 3-color display: Write inverted framebuffer to clear red channel */
+    gpio_pin_set(gpio1, DC_PIN, 1);  // Data mode
+    for (size_t i = 0; i < sizeof(framebuffer); i++) {
+        uint8_t inverted = ~framebuffer[i];
+        struct spi_buf tx_buf = {.buf = &inverted, .len = 1};
+        struct spi_buf_set tx = {.buffers = &tx_buf, .count = 1};
+        spi_write(spi_dev, &spi_cfg, &tx);
+    }
 
     /* Display update sequence */
     write_cmd(0x22);
