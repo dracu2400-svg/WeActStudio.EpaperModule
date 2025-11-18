@@ -9,6 +9,7 @@
 3. **SPI Device Include** - Fixed binding to use `spi-device.yaml` instead of `spi-device.base.yaml`
 4. **Logging Configuration** - Fixed CONFIG_DISPLAY_LOG_LEVEL → CONFIG_LOG_DEFAULT_LEVEL
 5. **String Enum Comparison** - Fixed color_mode property to use DT_INST_ENUM_IDX
+6. **Device Init Priority** - Changed CONFIG_DISPLAY_INIT_PRIORITY to numeric value 80
 
 All examples are now fully compatible with Zephyr 4.2.1!
 
@@ -246,6 +247,32 @@ LOG_MODULE_REGISTER(weact_epaper, CONFIG_LOG_DEFAULT_LEVEL);
 // where: 0 = "bw" (black & white), 1 = "bwr" (black, white & red)
 ```
 This fixes compilation errors: `'bw' undeclared` and `'bwr_P_color_mode_STRING_TOKEN' undeclared`.
+
+### 6. Device Initialization Priority (weact_epaper.c)
+**Problem**: Used non-existent `CONFIG_DISPLAY_INIT_PRIORITY` config option
+**Solution**: Changed to numeric priority value 80
+```c
+// Old (caused linker error: "Undefined initialization levels used")
+DEVICE_DT_INST_DEFINE(inst,
+                      weact_epaper_init_device,
+                      NULL,
+                      &weact_epaper_data_##inst,
+                      &weact_epaper_config_##inst,
+                      POST_KERNEL,
+                      CONFIG_DISPLAY_INIT_PRIORITY,
+                      NULL);
+
+// New (uses numeric priority)
+DEVICE_DT_INST_DEFINE(inst,
+                      weact_epaper_init_device,
+                      NULL,
+                      &weact_epaper_data_##inst,
+                      &weact_epaper_config_##inst,
+                      POST_KERNEL,
+                      80,  // Application level, after SPI/GPIO
+                      NULL);
+```
+Priority 80 ensures the display driver initializes after SPI and GPIO drivers (which use lower priorities like 50-70).
 
 ## 🎉 You're Ready!
 
