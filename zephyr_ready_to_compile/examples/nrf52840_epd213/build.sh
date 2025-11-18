@@ -19,7 +19,7 @@ fi
 
 # Build with overlay
 echo "Building application..."
-west build -b nrf52840dk_nrf52840 -- \
+west build -b nrf52840dk -- \
     -DDTC_OVERLAY_FILE="nrf52840dk_epd213.overlay"
 
 echo ""
