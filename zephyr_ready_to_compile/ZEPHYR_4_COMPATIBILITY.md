@@ -6,7 +6,8 @@
 
 1. **Board Name Format** - Zephyr 4.2+ uses slash notation: `board/variant`
 2. **Device Tree Bindings** - Added DTS_ROOT configuration to CMakeLists.txt
-3. **Logging Configuration** - Fixed CONFIG_DISPLAY_LOG_LEVEL → CONFIG_LOG_DEFAULT_LEVEL
+3. **SPI Device Include** - Fixed binding to use `spi-device.yaml` instead of `spi-device.base.yaml`
+4. **Logging Configuration** - Fixed CONFIG_DISPLAY_LOG_LEVEL → CONFIG_LOG_DEFAULT_LEVEL
 
 All examples are now fully compatible with Zephyr 4.2.1!
 
@@ -208,7 +209,19 @@ list(APPEND DTS_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 This tells Zephyr where to find the custom binding at:
 `zephyr_ready_to_compile/dts/bindings/display/weact,epaper.yaml`
 
-### 3. Logging Configuration (weact_epaper.c)
+### 3. SPI Device Binding Include (weact,epaper.yaml)
+**Problem**: Binding included `spi-device.base.yaml` which doesn't exist in Zephyr 4.2.1
+**Solution**: Changed to correct include name `spi-device.yaml`
+```yaml
+# Old
+include: [spi-device.base.yaml]
+
+# New
+include: spi-device.yaml
+```
+This fixes the "devicetree error: 'spi-device.base.yaml' not found" during CMake configuration.
+
+### 4. Logging Configuration (weact_epaper.c)
 **Problem**: Used non-existent `CONFIG_DISPLAY_LOG_LEVEL` symbol
 **Solution**: Changed to standard Zephyr `CONFIG_LOG_DEFAULT_LEVEL`
 ```c
