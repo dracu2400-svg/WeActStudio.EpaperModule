@@ -55,7 +55,7 @@ void epd_delay(uint16_t ms)
   delay(ms);
 }
 
-// 修改GPIO控制函数
+// GPIO control functions
 void epd_res_set()
 {
   digitalWrite(RES_PIN, HIGH);
@@ -141,7 +141,7 @@ void epd_io_deinit(void)
   wiringPiSPIClose(SPI_CHANNEL);
 }
 
-// 修改SPI数据传输函数
+// SPI data transfer functions
 void epd_write_reg(uint8_t reg)
 {
   epd_dc_reset();
@@ -169,7 +169,7 @@ void _epd_write_data(uint8_t *data, uint32_t len)
   if(dummy) {
     uint32_t chunk_size = 4096;
     if(chunk_size == 0 || chunk_size > len) {
-      chunk_size = len; // 如果块大小为0或大于总长度，则一次性传输
+      chunk_size = len; // If chunk size is 0 or greater than total length, transfer all at once
     }
     
     uint32_t remaining = len;
@@ -958,12 +958,12 @@ void epd_paint_drawCircle(uint16_t X_Center, uint16_t Y_Center, uint16_t Radius,
 
   if (mode)
   {
-    // 实心圆 - 绘制填充线
+    // Filled circle - draw filling lines
     epd_paint_drawLine(X_Center - Radius, Y_Center, X_Center + Radius, Y_Center, Color);
   }
   else
   {
-    // 空心圆 - 绘制8个对称点
+    // Hollow circle - draw 8 symmetric points
     epd_paint_drawPoint(X_Center, Y_Center + Radius, Color);
     epd_paint_drawPoint(X_Center, Y_Center - Radius, Color);
     epd_paint_drawPoint(X_Center + Radius, Y_Center, Color);
@@ -984,7 +984,7 @@ void epd_paint_drawCircle(uint16_t X_Center, uint16_t Y_Center, uint16_t Radius,
 
     if (mode)
     {
-      // 实心圆 - 绘制填充线
+      // Filled circle - draw filling lines
       epd_paint_drawLine(X_Center - x, Y_Center + y, X_Center + x, Y_Center + y, Color);
       epd_paint_drawLine(X_Center - x, Y_Center - y, X_Center + x, Y_Center - y, Color);
       epd_paint_drawLine(X_Center - y, Y_Center + x, X_Center + y, Y_Center + x, Color);
@@ -992,7 +992,7 @@ void epd_paint_drawCircle(uint16_t X_Center, uint16_t Y_Center, uint16_t Radius,
     }
     else
     {
-      // 空心圆 - 绘制8个对称点
+      // Hollow circle - draw 8 symmetric points
       epd_paint_drawPoint(X_Center + x, Y_Center + y, Color);
       epd_paint_drawPoint(X_Center - x, Y_Center + y, Color);
       epd_paint_drawPoint(X_Center + x, Y_Center - y, Color);
