@@ -1,0 +1,29 @@
+/*
+ * Minimal SPI1 configuration for e-paper test
+ * Just enables SPI1 on P1.x pins
+ */
+
+&pinctrl {
+	spi1_default: spi1_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 1, 15)>,   /* SCL - P1.15 */
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;  /* SDA - P1.13 */
+		};
+	};
+
+	spi1_sleep: spi1_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 1, 15)>,
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;
+			low-power-enable;
+		};
+	};
+};
+
+&spi1 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+	pinctrl-0 = <&spi1_default>;
+	pinctrl-1 = <&spi1_sleep>;
+	pinctrl-names = "default", "sleep";
+};
