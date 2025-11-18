@@ -90,12 +90,12 @@ void send_data(uint8_t data)
 	gpio_pin_set(gpio1, CS_PIN, 1);
 }
 
-/* CRITICAL FIX: BUSY is LOW when busy, HIGH when ready! */
+/* Wait for BUSY pin: HIGH=busy, LOW=ready (normal logic for 2.9" EPD213_219) */
 bool wait_busy(uint32_t timeout_ms)
 {
 	uint32_t count = 0;
-	/* Wait while BUSY is LOW (inverted logic!) */
-	while (gpio_pin_get(gpio1, BUSY_PIN) == 0) {
+	/* Wait while BUSY is HIGH */
+	while (gpio_pin_get(gpio1, BUSY_PIN) == 1) {
 		k_msleep(10);
 		count += 10;
 		if (count > timeout_ms) {

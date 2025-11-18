@@ -127,12 +127,12 @@ void write_data_buf(const uint8_t *data, size_t len)
     spi_write(spi_dev, &spi_cfg, &tx);
 }
 
-/* CRITICAL: BUSY is LOW when busy, HIGH when ready! */
+/* Wait for BUSY pin: HIGH=busy, LOW=ready */
 bool wait_busy(uint32_t timeout_ms)
 {
     uint32_t count = 0;
-    /* Wait while BUSY is LOW (inverted logic!) */
-    while (gpio_pin_get(gpio1, BUSY_PIN) == 0) {
+    /* Wait while BUSY is HIGH */
+    while (gpio_pin_get(gpio1, BUSY_PIN) == 1) {
         k_msleep(10);
         count += 10;
         if (count > timeout_ms) {
