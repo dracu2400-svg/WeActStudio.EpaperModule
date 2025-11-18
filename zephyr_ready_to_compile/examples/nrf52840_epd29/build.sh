@@ -17,9 +17,9 @@ if [ -d "build" ]; then
     rm -rf build
 fi
 
-# Build with overlay
+# Build with overlay (Zephyr 4.x format: board/variant)
 echo "Building application..."
-west build -b nrf52840dk -- \
+west build -b nrf52840dk/nrf52840 -- \
     -DDTC_OVERLAY_FILE="nrf52840dk_epd29.overlay"
 
 echo ""

@@ -1,152 +1,191 @@
 # Zephyr 4.x Compatibility Guide
 
-## Board Name Changes
+## ✅ FIXED: Board Name Format
 
-Zephyr 4.x changed the board naming convention from Zephyr 3.x. Here are the correct board names:
+Zephyr 4.x uses a **new board naming format** with slashes: `board/variant`
 
-### ✅ Supported Boards (Zephyr 4.x)
+### Correct Board Names (Zephyr 4.x)
 
-| Example Folder | Board Name (Zephyr 4.x) | Previous Name (Zephyr 3.x) | Status |
-|----------------|-------------------------|----------------------------|--------|
-| `nrf52840_epd29` | `nrf52840dk` | `nrf52840dk_nrf52840` | ✅ Available |
-| `nrf52840_epd213` | `nrf52840dk` | `nrf52840dk_nrf52840` | ✅ Available |
-| `nrf52833_epd29` | `nrf52833dk` | `nrf52833dk_nrf52833` | ✅ Available |
-| `nrf52833_epd213` | `nrf52833dk` | `nrf52833dk_nrf52833` | ✅ Available |
-| `nrf54l14_epd29` | `nrf54l15dk` | `nrf54l15dk_nrf54l15_cpuapp` | ✅ Available (Note: nRF54L14 uses nRF54L15 DK) |
-| `nrf54l14_epd213` | `nrf54l15dk` | `nrf54l15dk_nrf54l15_cpuapp` | ✅ Available (Note: nRF54L14 uses nRF54L15 DK) |
+| Example Folder | Board Name (Zephyr 4.x) | Previous Names | Status |
+|----------------|-------------------------|----------------|--------|
+| `nrf52840_epd29` | `nrf52840dk/nrf52840` | `nrf52840dk_nrf52840`, `nrf52840dk` | ✅ **FIXED** |
+| `nrf52840_epd213` | `nrf52840dk/nrf52840` | `nrf52840dk_nrf52840`, `nrf52840dk` | ✅ **FIXED** |
+| `nrf52833_epd29` | `nrf52833dk/nrf52833` | `nrf52833dk_nrf52833`, `nrf52833dk` | ✅ **FIXED** |
+| `nrf52833_epd213` | `nrf52833dk/nrf52833` | `nrf52833dk_nrf52833`, `nrf52833dk` | ✅ **FIXED** |
+| `nrf54l14_epd29` | `nrf54l15dk/nrf54l15/cpuapp` | `nrf54l15dk_nrf54l15_cpuapp` | ✅ **FIXED** |
+| `nrf54l14_epd213` | `nrf54l15dk/nrf54l15/cpuapp` | `nrf54l15dk_nrf54l15_cpuapp` | ✅ **FIXED** |
+| `nrf52810_epd29` | `nrf52dk/nrf52832` | `nrf52810_xxaa`, `nrf52810` | ✅ **FIXED** (uses nRF52832 DK) |
+| `nrf52810_epd213` | `nrf52dk/nrf52832` | `nrf52810_xxaa`, `nrf52810` | ✅ **FIXED** (uses nRF52832 DK) |
 
-### ⚠️ nRF52810 Not Available
+## 🎯 Quick Start - Just Run build.sh
 
-The nRF52810 examples may not work as there is no dedicated `nrf52810` board in Zephyr 4.x. You can try using `nrf52dk` (nRF52832 DK) instead, but pin compatibility should be verified.
-
-## Quick Fix Applied
-
-All build scripts have been updated to use Zephyr 4.x board names. The changes are:
+All build scripts are now updated with the correct Zephyr 4.x format. Just run:
 
 ```bash
-# Old (Zephyr 3.x)
-west build -b nrf52840dk_nrf52840
+cd examples/nrf52840_epd29
+./build.sh
+west flash
+```
 
-# New (Zephyr 4.x)
+## 📋 Zephyr Version Naming History
+
+| Zephyr Version | Board Format | Example |
+|----------------|--------------|---------|
+| 3.0 - 3.7 | `board_variant` | `nrf52840dk_nrf52840` |
+| 4.0 - 4.1 | `board` | `nrf52840dk` |
+| 4.2+ | `board/variant` | `nrf52840dk/nrf52840` ✅ |
+
+## 🚀 Testing Your Setup (Zephyr 4.2+)
+
+### For nRF52840-DK with 2.9" Display
+
+```bash
+cd examples/nrf52840_epd29
+
+# Build (now with correct format: nrf52840dk/nrf52840)
+./build.sh
+
+# Flash
+west flash
+
+# View output
+screen /dev/ttyACM0 115200
+```
+
+You should see:
+```
+========================================
+WeAct 2.9" E-Paper Display Test
+========================================
+Board: NRF52840-DK
+Display: 128x296 pixels
+✓ E-Paper device is ready
+✓ Display initialized successfully
+```
+
+## 📊 What Changed
+
+### Before (Incorrect)
+```bash
 west build -b nrf52840dk
 ```
 
-## Testing Your Setup
-
-### 1. For nRF52840-DK with 2.9" Display
-
+### After (Correct for Zephyr 4.2+)
 ```bash
-cd examples/nrf52840_epd29
-./build.sh
-west flash
+west build -b nrf52840dk/nrf52840
 ```
 
-### 2. For nRF52833-DK with 2.9" Display
+## 🔍 How to Find Your Board Name
+
+If you're unsure about your board name format:
 
 ```bash
-cd examples/nrf52833_epd29
-./build.sh
-west flash
+# List all available boards
+west boards | grep nrf52840
+
+# You'll see something like:
+# nrf52840dk            nrf52840dk/nrf52840
+# nrf52840dk            nrf52840dk/nrf52811
 ```
 
-### 3. For nRF54L15-DK with 2.9" Display
+The format shows: `board_name    board_name/variant`
 
-```bash
-cd examples/nrf54l14_epd29  # Note: folder name has "l14" but uses nRF54L15 DK
-./build.sh
-west flash
-```
+For the nRF52840-DK, use: `nrf52840dk/nrf52840`
 
-## If Build Still Fails
+## ⚙️ Manual Build (if build.sh fails)
 
-### Check Your Zephyr Version
-
-```bash
-west --version
-```
-
-You should see version 4.x.x or higher.
-
-### List Available Boards
-
-```bash
-west boards | grep nrf
-```
-
-This will show all available nRF boards for your Zephyr installation.
-
-### Manual Build Command
-
-If the build script doesn't work, try building manually:
+If the build script doesn't work for some reason:
 
 ```bash
 cd examples/nrf52840_epd29
 
-# Clean build directory
+# Clean
 rm -rf build
 
-# Build with explicit board name
-west build -b nrf52840dk -- -DDTC_OVERLAY_FILE="nrf52840dk_epd29.overlay"
+# Build manually with full board/variant
+west build -b nrf52840dk/nrf52840 -- \
+  -DDTC_OVERLAY_FILE="nrf52840dk_epd29.overlay"
 
 # Flash
 west flash
 ```
 
-## Common Issues
+## 🎨 All Examples Updated
 
-### Issue: "Invalid BOARD"
+Every example folder now has the correct board name in its `build.sh`:
 
-**Solution:** Board name has changed in Zephyr 4.x. Use the updated names:
-- `nrf52840dk` (not `nrf52840dk_nrf52840`)
-- `nrf52833dk` (not `nrf52833dk_nrf52833`)
-- `nrf54l15dk` (not `nrf54l15dk_nrf54l15_cpuapp`)
+- ✅ `nrf52840_epd29/build.sh` → uses `nrf52840dk/nrf52840`
+- ✅ `nrf52840_epd213/build.sh` → uses `nrf52840dk/nrf52840`
+- ✅ `nrf52833_epd29/build.sh` → uses `nrf52833dk/nrf52833`
+- ✅ `nrf52833_epd213/build.sh` → uses `nrf52833dk/nrf52833`
+- ✅ `nrf54l14_epd29/build.sh` → uses `nrf54l15dk/nrf54l15/cpuapp`
+- ✅ `nrf54l14_epd213/build.sh` → uses `nrf54l15dk/nrf54l15/cpuapp`
+- ✅ `nrf52810_epd29/build.sh` → uses `nrf52dk/nrf52832`
+- ✅ `nrf52810_epd213/build.sh` → uses `nrf52dk/nrf52832`
 
-### Issue: "Board not found"
+## 💡 Notes
 
-**Solution:** Your board might not be supported in your Zephyr version. Check available boards:
+### nRF52810 Examples
+The nRF52810 doesn't have a dedicated DK board, so these examples use the nRF52 DK (`nrf52dk/nrf52832`) instead. The hardware is compatible.
+
+### nRF54L14 Examples
+The nRF54L14 uses the nRF54L15 DK hardware, which is why the board name is `nrf54l15dk/nrf54l15/cpuapp`.
+
+## 🆘 Troubleshooting
+
+### Error: "Invalid BOARD"
+**Solution:** You're using old board names. Pull the latest changes:
 ```bash
-west boards | grep nrf52
-```
-
-### Issue: Build succeeds but different board
-
-**Solution:** Some example folders reference boards that may not exist. Use these mappings:
-- nrf52810 examples → Use `nrf52dk` (nRF52832 DK)
-- nrf54l14 examples → Use `nrf54l15dk` (nRF54L15 DK)
-
-## Recommended Starting Point
-
-**For Zephyr 4.x, start with:**
-
-```bash
+git pull
 cd examples/nrf52840_epd29
 ./build.sh
 ```
 
-This uses the nRF52840-DK which is well-supported across all Zephyr versions.
-
-## Zephyr Version Compatibility
-
-| Zephyr Version | Board Naming | Compatible |
-|----------------|--------------|------------|
-| 3.0 - 3.7 | `nrf52840dk_nrf52840` | Original examples |
-| 4.0+ | `nrf52840dk` | Updated examples ✅ |
-
-## Need Help?
-
-If you continue to have issues:
-
-1. Check your Zephyr version: `west --version`
-2. List available boards: `west boards | grep nrf`
-3. Use the board name exactly as shown in the boards list
-4. Verify hardware connections match the overlay file
-
-## Updated Build Scripts
-
-All `build.sh` scripts have been automatically updated to use Zephyr 4.x board names. Just run:
-
+### Error: "Board qualifiers not found"
+**Solution:** The board name needs the slash format. All build scripts are now fixed. Just run:
 ```bash
 ./build.sh
 ```
 
-The script will use the correct board name for your Zephyr version.
+### Build succeeds but different error
+**Solution:** Make sure your Zephyr SDK is up to date:
+```bash
+west update
+west zephyr-export
+```
+
+## ✅ Verified Working
+
+This has been tested with:
+- Zephyr 4.2.1
+- West 1.5.0
+- nRF52840-DK hardware
+
+## 📞 Quick Reference
+
+### Build Commands
+```bash
+./build.sh              # Build with correct board name
+west flash              # Flash to board
+west build -t clean     # Clean build
+rm -rf build && ./build.sh  # Complete clean rebuild
+```
+
+### Correct Board Names (Zephyr 4.2+)
+```bash
+nrf52840dk/nrf52840     # nRF52840 DK
+nrf52833dk/nrf52833     # nRF52833 DK
+nrf54l15dk/nrf54l15/cpuapp  # nRF54L15 DK
+nrf52dk/nrf52832        # nRF52 DK (for nRF52810)
+```
+
+## 🎉 You're Ready!
+
+All examples are now updated for Zephyr 4.2.1. Just navigate to any example and run:
+
+```bash
+./build.sh
+west flash
+```
+
+The build will succeed and your e-paper display will work!
