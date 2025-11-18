@@ -8,6 +8,7 @@
 2. **Device Tree Bindings** - Added DTS_ROOT configuration to CMakeLists.txt
 3. **SPI Device Include** - Fixed binding to use `spi-device.yaml` instead of `spi-device.base.yaml`
 4. **Logging Configuration** - Fixed CONFIG_DISPLAY_LOG_LEVEL → CONFIG_LOG_DEFAULT_LEVEL
+5. **String Enum Comparison** - Fixed color_mode property to use DT_INST_ENUM_IDX
 
 All examples are now fully compatible with Zephyr 4.2.1!
 
@@ -231,6 +232,20 @@ LOG_MODULE_REGISTER(weact_epaper, CONFIG_DISPLAY_LOG_LEVEL);
 // New
 LOG_MODULE_REGISTER(weact_epaper, CONFIG_LOG_DEFAULT_LEVEL);
 ```
+
+### 5. String Enum Comparison (weact_epaper.c)
+**Problem**: Incorrect use of `DT_STRING_TOKEN` for comparing string enum values
+**Solution**: Changed to use `DT_INST_ENUM_IDX` for proper enum index comparison
+```c
+// Old (incorrect - caused compilation errors)
+.color_red = DT_INST_STRING_TOKEN(inst, color_mode) ==
+             DT_STRING_TOKEN(bwr, color_mode),
+
+// New (correct - uses enum index)
+.color_red = (DT_INST_ENUM_IDX(inst, color_mode) == 1),
+// where: 0 = "bw" (black & white), 1 = "bwr" (black, white & red)
+```
+This fixes compilation errors: `'bw' undeclared` and `'bwr_P_color_mode_STRING_TOKEN' undeclared`.
 
 ## 🎉 You're Ready!
 
