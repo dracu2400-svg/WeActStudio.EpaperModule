@@ -162,15 +162,17 @@ bool init_display(void)
 
     reset_display();
 
-    if (!wait_busy(5000)) {
-        LOG_ERR("Display not ready after reset");
-        return false;
-    }
+    /* NOTE: Don't wait for BUSY here - display may not assert BUSY until
+     * we send the first command via SPI */
 
     /* Software reset */
     write_cmd(0x12);
     k_msleep(10);
-    if (!wait_busy(5000)) return false;
+    LOG_INF("Waiting for display after software reset...");
+    if (!wait_busy(5000)) {
+        LOG_ERR("Display not ready after software reset");
+        return false;
+    }
 
     /* Driver output control - 296 lines for 2.9" */
     write_cmd(0x01);
