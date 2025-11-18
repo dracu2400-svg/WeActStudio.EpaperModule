@@ -638,7 +638,7 @@ static int weact_epaper_init_device(const struct device *dev)
 			      &weact_epaper_data_##inst,			\
 			      &weact_epaper_config_##inst,			\
 			      POST_KERNEL,					\
-			      CONFIG_DISPLAY_INIT_PRIORITY,			\
+			      80,						\
 			      NULL);
 
 DT_INST_FOREACH_STATUS_OKAY(WEACT_EPAPER_DEFINE)
